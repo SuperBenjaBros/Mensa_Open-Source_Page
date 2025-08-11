@@ -1,0 +1,109 @@
+<dialog open class="Advertisement">
+    <aside class="Advertisement__Container">
+        <article class="Container__Article">
+            <h2 class="Article__Main">This Site Is An Not Official Educational Reimagining Of <a href="https://Mensa.Org" class="Article__To-Mensa-Link IgnoreLink" rel="noopener noreferrer nofollow" target="_blank">Mensa Webpage</a></h2>
+
+            <p class="Article__Legal-Disclaimer">This Site Is Non-Official And For Educational Purposes Only. It Is Not Affiliated With, Endorsed By, Or Sponsored By Mensa<br> A Custom Logo Has Been Used; No Official Mensa Assets Were Copied<br>All Credits Of Asset Used In This Proyect Are Available in the <a href="https://GitHub.com/SuperBenjaBros/Mensa_Open-Source_Page" class="Legal-Disclaimer__ToGHRepo IgnoreLink" rel="noopener noreferrer nofollow" target="_blank">GitHub repository</a></p>
+        </article>
+        <form method="dialog">
+            <button type="submit" class="Form__Understand">I Understand And Wish To Continue</button>
+        </form>
+    </aside>
+</dialog>
+
+<style>
+.Advertisement {
+    height: 100dvh;
+    width: 100dvw;
+
+    position: fixed;
+
+    z-index: 1000;
+
+    backdrop-filter: blur(15px);
+
+    background-color: transparent;
+}
+
+.Advertisement__Container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: clamp(320px, calc(100vw - 5rem), 720px);
+
+    border-radius: 3.125rem;
+    padding: 3.125rem;
+
+    background: linear-gradient(45deg, oklch(from var(--Main) calc(l * .9) c calc(h + 250)), oklch(from var(--Main) calc(l * 1.2) c calc(h + 270)));
+
+    color: var(--Text);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 34px;
+}
+
+/*
+@media (max-width: 520px) {
+    .Advertisement__Container {
+        width: calc(100% - 5rem);
+    }
+} */
+
+.Article__Main {
+    font-size: 2.5rem;
+    text-align: center;
+    text-wrap: balance;
+
+    margin-bottom: 25px;
+}
+
+.Article__To-Mensa-Link {
+    color: oklch(from var(--White) calc(l * .5) calc(c * 25) h);
+}
+
+.Article__Legal-Disclaimer {
+    text-wrap: pretty;
+    font-weight: 600;
+    font-size: 1.25rem;
+
+    margin: 0 auto;
+    max-width: min(90ch, calc(100% - 5rem));
+}
+
+.Legal-Disclaimer__ToGHRepo {
+    color: #010101;
+    font-weight: 800;
+    font-size: 1.35rem;
+}
+
+.Form__Understand {
+    padding: 2rem;
+
+    color: var(--White);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+    font-size: 1.25rem;
+
+    background-image: linear-gradient(25deg, oklch(from var(--Shadow) calc(l * .3) c h) 10%, oklch(from var(--Shadow) calc(l * 1.2) c h));
+
+    border: none;
+    outline: 2px solid oklch(from var(--Shadow) calc(l * 1.2) c h);
+}
+
+body:has(dialog[open]) {
+    overflow: hidden;
+}
+
+</style>

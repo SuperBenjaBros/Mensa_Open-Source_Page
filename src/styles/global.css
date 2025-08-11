@@ -9,7 +9,7 @@
     --Shadow: #6a1af3;
     --Dark: #0a0e66;
     --White: #f0f8ff;
-    --Dark: #0B1020;
+    --Text: oklch(from var(--White) calc(l * .2) c h);
 
     font-size: clamp(8px, 1dvw, 16px);
 
