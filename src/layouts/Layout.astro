@@ -31,98 +31,108 @@ import "../styles/global.css"
 
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
 
-		<script>
-			(() => {
-				const DEPTH = 350;
-				const EDGE_PAD = 8;
-				const nodes = document.querySelectorAll('.MouseEffect');
+        <script>
+            (() => {
+                const DEPTH = 350;
+                const EDGE_PAD = 8;
+                const nodes = document.querySelectorAll('.MouseEffect');
 
-				for (const el of nodes) {
-					if (!(el instanceof HTMLElement) || el.dataset.meInit) continue;
+                for (const el of nodes) {
+                    if (!(el instanceof HTMLElement) || el.dataset.meInit) continue;
 
-					el.dataset.meInit = '1';
-					el.style.transformStyle = 'preserve-3d';
+                    el.dataset.meInit = '1';
+                    el.style.transformStyle = 'preserve-3d';
 
-					let raf = null;
-					let leaveTimer = null;
-					let disableTransTimer = null;
-					let rx = 0, ry = 0;
+                    let raf = null;
+                    let leaveTimer = null;
+                    let disableTransTimer = null;
+                    let rx = 0, ry = 0;
 
-					const getTimeMs = () => {
-						const t = getComputedStyle(el).getPropertyValue('--TimeMouseEffect') || '.2s';
-						const m = t.match(/([\d.]+)(ms|s)?/);
-						if (!m) return 200;
-						const v = parseFloat(m[1]);
-						return (m[2] === 'ms' ? v : v * 1000);
-					};
+                    const getTimeMs = () => {
+                        const t = getComputedStyle(el).getPropertyValue('--TimeMouseEffect') || '.2s';
+                        const m = t.match(/([\d.]+)(ms|s)?/);
+                        if (!m) return 200;
+                        const v = parseFloat(m[1]);
+                        return (m[2] === 'ms' ? v : v * 1000);
+                    };
 
-					const parsePerspective = () => {
-						const p = getComputedStyle(el).getPropertyValue('--Perspective') || '8';
-						const v = parseFloat(p);
-						return isNaN(v) ? 8 : Math.abs(v);
-					};
+                    const parsePerspective = () => {
+                        const p = getComputedStyle(el).getPropertyValue('--Perspective') || '8';
+                        const v = parseFloat(p);
+                        return isNaN(v) ? 8 : Math.abs(v);
+                    };
 
-					const apply = () => {
-						raf = null;
-						el.style.transform = `perspective(${DEPTH}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-					};
+                    const apply = () => {
+                        raf = null;
+                        el.style.transform = `perspective(${DEPTH}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+                    };
 
-					const scheduleTransition = () => {
-						if (disableTransTimer) clearTimeout(disableTransTimer);
-						el.style.transition = `transform ${getTimeMs()}ms ease-in-out`;
-						disableTransTimer = setTimeout(() => {
-							el.style.transition = 'transform 0s';
-						}, getTimeMs());
-					};
+                    const scheduleTransition = () => {
+                        if (disableTransTimer) clearTimeout(disableTransTimer);
+                        el.style.transition = `transform ${getTimeMs()}ms ease-in-out`;
+                        disableTransTimer = setTimeout(() => {
+                            el.style.transition = 'transform 0s';
+                        }, getTimeMs());
+                    };
 
-					const onmove = e => {
-						if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+                    const onmove = e => {
+                        if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
 
-						const point = ('touches' in e) ? e.touches[0] : e;
-						const r = el.getBoundingClientRect();
-						
-						const isInside = (point.clientX >= r.left - EDGE_PAD && point.clientX <= r.right + EDGE_PAD &&
-										point.clientY >= r.top - EDGE_PAD && point.clientY <= r.bottom + EDGE_PAD);
+                        const point = ('touches' in e) ? e.touches[0] : e;
+                        const r = el.getBoundingClientRect();
+                        
+                        const cx = r.left + r.width / 2;
+                        const cy = r.top + r.height / 2;
+                        
+                        const nx = Math.max(-1, Math.min(1, (point.clientX - cx) / (r.width / 2)));
+                        const ny = Math.max(-1, Math.min(1, (point.clientY - cy) / (r.height / 2)));
 
-						if (!isInside) {
-							onleave();
-							return;
-						}
+                        const mag = parsePerspective();
+                        rx = -ny * mag;
+                        ry = nx * mag;
 
-						const cx = r.left + r.width / 2;
-						const cy = r.top + r.height / 2;
-						
-						const nx = Math.max(-1, Math.min(1, (point.clientX - cx) / (r.width / 2)));
-						const ny = Math.max(-1, Math.min(1, (point.clientY - cy) / (r.height / 2)));
+                        if (raf === null) raf = requestAnimationFrame(apply);
+                    };
 
-						const mag = parsePerspective();
-						rx = -ny * mag;
-						ry = nx * mag;
+                    const onenter = () => {
+                        scheduleTransition();
+                    };
 
-						if (raf === null) raf = requestAnimationFrame(apply);
-					};
+                    const onleave = () => {
+                        if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+                        if (disableTransTimer) { clearTimeout(disableTransTimer); disableTransTimer = null; }
+                        if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
 
-					const onenter = () => {
-						scheduleTransition();
-					};
+                        rx = 0;
+                        ry = 0;
+                        scheduleTransition();
+                        apply();
+                    };
 
-					const onleave = () => {
-						if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
-						if (disableTransTimer) { clearTimeout(disableTransTimer); disableTransTimer = null; }
-						if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
+                    const ondown = e => {
+                        onenter();
+                        
+                        const onDocumentMove = evt => {
+                            onmove(evt);
+                        };
+                        
+                        const onDocumentUp = () => {
+                            onleave();
+                            window.removeEventListener('pointermove', onDocumentMove);
+                            window.removeEventListener('pointerup', onDocumentUp);
+                        };
 
-						rx = 0;
-						ry = 0;
-						scheduleTransition();
-						apply();
-					};
+                        window.addEventListener('pointermove', onDocumentMove);
+                        window.addEventListener('pointerup', onDocumentUp);
+                    };
 
-					el.addEventListener('pointerenter', onenter);
-					el.addEventListener('pointermove', onmove);
-					el.addEventListener('pointerleave', onleave);
-				}
-			})();
-		</script>
+                    el.addEventListener('pointerdown', ondown);
+                    el.addEventListener('pointerenter', onenter);
+                    el.addEventListener('pointermove', onmove);
+                    el.addEventListener('pointerleave', onleave);
+                }
+            })();
+        </script>
 
 	</head>
 	<body>
