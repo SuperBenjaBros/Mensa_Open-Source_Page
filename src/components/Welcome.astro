@@ -1,0 +1,89 @@
+<section class="welcome">
+    <p class="welcome__hi MouseEffect">Discover a <span style="--SpanSize:1.2">universe</span> where <span style="--SpanSize:1.3">curiosity</span> meets <span style="--SpanSize:1.5">brilliance</span>, join to <span style="--SpanSize:1.8; line-height:1lh">mensa</span>, the community <span style="--SpanSize:1.2">shaping</span> the <span style="--SpanSize:1.65">future</span>.</p>
+    <a class="welcome__more IgnoreLink MouseEffect Buttons" href="#">Know More<span class="item__arrow material-symbols-outlined">arrow_drop_down</span></a>
+</section>
+
+<style>
+.welcome {
+    height: 110dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.welcome::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    height: 120dvh;
+
+    background-image: radial-gradient(oklch(from var(--White) l c h / .2), oklch(from var(--Dark) l c h / .8)), url("https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-size: cover;
+    background-position: end;
+    background-repeat: no-repeat;
+
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0));
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+
+    filter: grayscale(1) brightness(0.5);
+
+}
+
+.welcome__hi {
+    --TextSize: 3rem;
+    --SpanSize: 1;
+
+    max-width: 800px;
+    font-weight: 700;
+    font-size: var(--TextSize);
+    line-height: 2.75lh;
+    text-align: center;
+    text-wrap: balance;
+}
+
+.welcome__hi > span {
+    font-size: calc(var(--TextSize) * var(--SpanSize));
+}
+
+.welcome__hi::selection, .welcome__hi > span::selection {
+    color: oklch(from var(--White) l c h / .8);
+    background-color: transparent;
+    text-shadow: 1px 1px 8px var(--Main);
+}
+
+.welcome__more {
+    height: 4rem;
+    width: 10rem;
+    padding: 5px;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+
+    border-radius: 10px;
+
+    font-weight: 700;
+    font-size: 1.45rem;
+
+    line-height: 1lh;
+
+    background-image: linear-gradient(25deg, oklch(from var(--Main) calc(l * .5) c h) 10%, oklch(from var(--Main) calc(l * 1.2) c h));
+
+    border: none;
+    outline: 2px solid oklch(from var(--Main) calc(l * 1.1) c h);
+}
+
+.welcome__more > span {
+    display: block;
+    vertical-align: text-bottom;
+    font-size: 1.5rem;
+}
+
+</style>

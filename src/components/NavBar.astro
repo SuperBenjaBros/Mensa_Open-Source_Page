@@ -1,0 +1,134 @@
+<nav class="navbar MouseEffect" style="--Scale: scale(1.01); --Perspective: 0;">
+    <a class="navbar__mensa-logo IgnoreLink" href="#">
+        <img src="/favicon.svg" alt="Mensa Logo" class="mensa-logo__icon NoSelect MouseEffect">
+        <h1 class="MouseEffect">Mensa<span>International</span></h1>
+    </a>
+    <ul class="navbar__list-items">
+        <li class="list-items__item MouseEffect">About<span class="item__arrow material-symbols-outlined">expand_more</span></li>
+        <li class="list-items__item MouseEffect">IQ<span class="item__arrow material-symbols-outlined">expand_more</span></li>
+        <li class="list-items__item MouseEffect">Join Us<span class="item__arrow material-symbols-outlined">expand_more</span></li>
+        <li class="list-items__item MouseEffect">Helping Others<span class="item__arrow material-symbols-outlined">expand_more</span></li>
+        <li class="list-items__item MouseEffect">Countries<span class="item__arrow material-symbols-outlined">expand_more</span></li>
+        <li class="list-items__item MouseEffect">Contact Us<span class="item__arrow material-symbols-outlined">expand_more</span></li>
+    </ul>
+    <a class="navbar__contact IgnoreLink MouseEffect Buttons" href="/login">Login</a>
+</nav>
+
+<style>
+.navbar {
+    width: 100%;
+
+    overflow: hidden;
+
+    padding: 8px 50px;
+    z-index: 100;
+
+    filter: drop-shadow(2px 4px 5px oklch(from var(--Dark) calc(l * 1.5) c h));
+    backdrop-filter: blur(15px);
+
+    background-color: oklch(from var(--Black) l c h / 1);
+    outline: 2px solid oklch(from var(--White) l c h / .3);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    position: fixed;
+
+    animation: NavBarSpawn;
+    animation-timeline: scroll();
+    animation-range: 0% 20%;
+    animation-fill-mode: forwards;
+
+    --SpanDisplay: block;
+
+    color: var(--White);
+}
+
+@keyframes NavBarSpawn {
+    from {
+        height: 9rem;
+    }
+    to {
+        height: 5rem;
+        --SpanDisplay: none;
+    }
+}
+
+.navbar__mensa-logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    height: 95%;
+}
+
+.mensa-logo__icon {
+    aspect-ratio: 1/1;
+    height: 100%;
+    width: auto;
+
+    color: var(--White);
+    text-decoration: none;
+    text-decoration-color: currentColor;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+h1 {
+    padding-left: 15px;
+
+    font-weight: 800;
+    font-size: 3rem;
+    line-height: 1.4lh;
+}
+
+h1 > span {
+    display: var(--SpanDisplay);
+    font-size: 1.5rem;
+}
+
+.navbar__list-items {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.list-items__item {
+    list-style: none;
+
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.item__arrow {
+    color: oklch(from var(--White) l c h / .8);
+    vertical-align: text-bottom;
+    font-size: 1.2rem;
+
+}
+
+.navbar__contact {
+    height: min(100%, 4rem);
+    width: 10rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+    font-size: 1.25rem;
+
+    background-image: linear-gradient(25deg, oklch(from var(--Shadow) calc(l * .3) c h) 10%, oklch(from var(--Shadow) calc(l * 1.2) c h));
+
+    border: none;
+    outline: 2px solid oklch(from var(--Shadow) calc(l * 1.1) c h);
+}
+
+</style>
