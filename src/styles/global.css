@@ -6,6 +6,9 @@
 :root {
     --Main: #FF7A3A;
 
+    --Demonic: #f21b46;
+    --BusyDemonic: #bf0046;
+
     --Shadow: #6a1af3;
     --Dark: #0a0e66;
     --White: #f0f8ff;
@@ -25,7 +28,7 @@ html, body {
 
 body {
     margin: 0;
-    background: linear-gradient(to bottom, oklch(from #170d21 l c h), var(--Dark));
+    background: linear-gradient(to bottom, oklch(from var(--Shadow) calc(l * .2) c h), var(--Dark));
     background-repeat: no-repeat;
     background-size: 100% 300%;
 
@@ -37,6 +40,8 @@ body {
     color: var(--Shadow);
     background-color: var(--White);
 }
+
+/* ---------------- Class PreFabs -------- */
 
 .NoSelect {
     user-select: none;
@@ -66,16 +71,15 @@ body {
 .MouseEffect {
     --TimeMouseEffect: .1s;
     --Perspective: 3;
-
     transform-style: preserve-3d;
     transform: perspective(350px);
     transition: transform var(--TimeMouseEffect) cubic-bezier(0.64, 0.57, 0.67, 1.53);
+    will-change: transform;
 }
-
-.MouseEffect:hover {
-    z-index: 10;
-}
+.MouseEffect:hover { z-index: 10; }
 
 .Buttons {
     --Perspective: 10;
 }
+
+/* ---------------- Animations PreFabs -------- */

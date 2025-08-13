@@ -1,6 +1,6 @@
 <section class="welcome">
-    <p class="welcome__hi MouseEffect">Discover a <span style="--SpanSize:1.2">universe</span> where <span style="--SpanSize:1.3">curiosity</span> meets <span style="--SpanSize:1.5">brilliance</span>, join to <span style="--SpanSize:1.8; line-height:1lh">mensa</span>, the community <span style="--SpanSize:1.2">shaping</span> the <span style="--SpanSize:1.65">future</span>.</p>
-    <a class="welcome__more IgnoreLink MouseEffect Buttons" href="#">Know More<span class="item__arrow material-symbols-outlined">arrow_drop_down</span></a>
+    <p class="welcome__hi MouseEffect" style="--Perspective:.25">Discover a <span style="--SpanSize:1.2">universe</span> where <span style="--SpanSize:1.3">curiosity</span> meets <span style="--SpanSize:1.5">brilliance</span>, join to <span style="--SpanSize:1.8; line-height:1lh">mensa</span>, the community <span style="--SpanSize:1.2">shaping</span> the <span style="--SpanSize:1.65">future</span>.</p>
+    <a class="welcome__more IgnoreLink MouseEffect Buttons" href="#PowerUps">Know More<span class="item__arrow material-symbols-outlined">arrow_drop_down</span></a>
 </section>
 
 <style>
@@ -57,9 +57,8 @@
 }
 
 .welcome__more {
-    height: 4rem;
-    width: 10rem;
-    padding: 5px;
+    padding: 15px;
+    padding-bottom: 5px;
     position: relative;
 
     display: flex;
@@ -84,6 +83,18 @@
     display: block;
     vertical-align: text-bottom;
     font-size: 1.5rem;
+
+    animation: Float .75s ease-in-out alternate infinite;
+}
+
+@keyframes Float {
+    from {
+        transform: translateY(0px);
+    }
+
+    to {
+        transform: translateY(2.5px);
+    }
 }
 
 </style>

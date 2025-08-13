@@ -9,9 +9,9 @@
         <li class="list-items__item MouseEffect">Join Us<span class="item__arrow material-symbols-outlined">expand_more</span></li>
         <li class="list-items__item MouseEffect">Helping Others<span class="item__arrow material-symbols-outlined">expand_more</span></li>
         <li class="list-items__item MouseEffect">Countries<span class="item__arrow material-symbols-outlined">expand_more</span></li>
-        <li class="list-items__item MouseEffect">Contact Us<span class="item__arrow material-symbols-outlined">expand_more</span></li>
     </ul>
-    <a class="navbar__contact IgnoreLink MouseEffect Buttons" href="/login">Login</a>
+    <a class="navbar__login navbar__button IgnoreLink MouseEffect" href="/Login">Login</a>
+    <a class="navbar__join navbar__button IgnoreLink MouseEffect" href="/join">Join Us</a>
 </nav>
 
 <style>
@@ -38,7 +38,7 @@
 
     animation: NavBarSpawn;
     animation-timeline: scroll();
-    animation-range: 0% 20%;
+    animation-range: 0% 25%;
     animation-fill-mode: forwards;
 
     --SpanDisplay: block;
@@ -82,11 +82,14 @@ h1 {
     font-weight: 800;
     font-size: 3rem;
     line-height: 1.4lh;
+
+    z-index: 1;
 }
 
 h1 > span {
     display: var(--SpanDisplay);
     font-size: 1.5rem;
+    z-index: -1;
 }
 
 .navbar__list-items {
@@ -112,7 +115,7 @@ h1 > span {
 
 }
 
-.navbar__contact {
+.navbar__button {
     height: min(100%, 4rem);
     width: 10rem;
 
@@ -129,6 +132,18 @@ h1 > span {
 
     border: none;
     outline: 2px solid oklch(from var(--Shadow) calc(l * 1.1) c h);
+}
+
+.navbar__login {
+    background-image: linear-gradient(25deg, oklch(from var(--Shadow) calc(l * .3) c h) 10%, oklch(from var(--Shadow) calc(l * 1.2) c h));
+    outline: 2px solid oklch(from var(--Shadow) calc(l * 1.1) c h);
+
+    margin-right: 15px;
+}
+
+.navbar__join {
+    background-image: linear-gradient(57deg, oklch(from var(--BusyDemonic) calc(l * .5) c calc(h - 30)) 10%, oklch(from var(--Demonic) calc(l * 1.1) c calc(h - 10)));
+    outline: 2px solid oklch(from var(--BusyDemonic) calc(l * 1.25) c h);
 }
 
 </style>

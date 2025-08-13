@@ -31,120 +31,97 @@ import "../styles/global.css"
 
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
 
-        <script>
-            (() => {
-                const DEPTH = 350;
-                const EDGE_PAD = 8;
-                const nodes = document.querySelectorAll('.MouseEffect');
+<script>
+(() => {
+    const DEPTH = 350;
+    const nodes = Array.from(document.querySelectorAll('.MouseEffect')).filter(n => n instanceof HTMLElement);
+    if (!nodes.length) return;
+    const state = new WeakMap();
 
-                for (const el of nodes) {
-                    if (!(el instanceof HTMLElement) || el.dataset.meInit) continue;
+    const getTimeMs = el => {
+        const t = getComputedStyle(el).getPropertyValue('--TimeMouseEffect') || '.2s';
+        const m = t.match(/([\d.]+)(ms|s)?/);
+        if (!m) return 200;
+        const v = parseFloat(m[1]);
+        return (m[2] === 'ms' ? v : v * 1000);
+    };
 
-                    el.dataset.meInit = '1';
-                    el.style.transformStyle = 'preserve-3d';
+    const parsePerspective = el => {
+        const p = getComputedStyle(el).getPropertyValue('--Perspective') || '8';
+        const v = parseFloat(p);
+        return isNaN(v) ? 8 : Math.abs(v);
+    };
 
-                    let raf = null;
-                    let leaveTimer = null;
-                    let disableTransTimer = null;
-                    let rx = 0, ry = 0;
+    for (const el of nodes) {
+        el.style.transformStyle = 'preserve-3d';
+        state.set(el, { raf: null, rx: 0, ry: 0, active: false, disableTransTimer: null });
+    }
 
-                    const getTimeMs = () => {
-                        const t = getComputedStyle(el).getPropertyValue('--TimeMouseEffect') || '.2s';
-                        const m = t.match(/([\d.]+)(ms|s)?/);
-                        if (!m) return 200;
-                        const v = parseFloat(m[1]);
-                        return (m[2] === 'ms' ? v : v * 1000);
-                    };
+    const apply = el => {
+        const s = state.get(el);
+        s.raf = null;
+        el.style.transform = `perspective(${DEPTH}px) rotateX(${s.rx}deg) rotateY(${s.ry}deg)`;
+    };
 
-                    const parsePerspective = () => {
-                        const p = getComputedStyle(el).getPropertyValue('--Perspective') || '8';
-                        const v = parseFloat(p);
-                        return isNaN(v) ? 8 : Math.abs(v);
-                    };
+    const scheduleTransition = el => {
+        const s = state.get(el);
+        if (s.disableTransTimer) clearTimeout(s.disableTransTimer);
+        el.style.transition = `transform ${getTimeMs(el)}ms ease-in-out`;
+        s.disableTransTimer = setTimeout(() => el.style.transition = 'transform 0s', getTimeMs(el));
+    };
 
-                    const apply = () => {
-                        raf = null;
-                        el.style.transform = `perspective(${DEPTH}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-                    };
+    const computeFor = (el, point) => {
+        const s = state.get(el);
+        const r = el.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const nx = Math.max(-1, Math.min(1, (point.clientX - cx) / (r.width / 2)));
+        const ny = Math.max(-1, Math.min(1, (point.clientY - cy) / (r.height / 2)));
+        const mag = parsePerspective(el);
+        s.rx = -ny * mag;
+        s.ry = nx * mag;
+        if (s.raf === null) s.raf = requestAnimationFrame(() => apply(el));
+    };
 
-                    const scheduleTransition = () => {
-                        if (disableTransTimer) clearTimeout(disableTransTimer);
-                        el.style.transition = `transform ${getTimeMs()}ms ease-in-out`;
-                        disableTransTimer = setTimeout(() => {
-                            el.style.transition = 'transform 0s';
-                        }, getTimeMs());
-                    };
+    const resetEl = el => {
+        const s = state.get(el);
+        if (s.disableTransTimer) { clearTimeout(s.disableTransTimer); s.disableTransTimer = null; }
+        if (s.raf !== null) { cancelAnimationFrame(s.raf); s.raf = null; }
+        s.rx = 0; s.ry = 0; s.active = false;
+        scheduleTransition(el);
+        apply(el);
+    };
 
-                    const onmove = e => {
-                        if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+    const globalMove = e => {
+        const point = e.touches ? e.touches[0] : e;
+        if (!point) return;
+        const top = document.elementFromPoint(point.clientX, point.clientY);
+        const me = top && top.closest ? top.closest('.MouseEffect') : null;
+        for (const el of nodes) {
+            if (el === me) {
+                const s = state.get(el);
+                if (!s.active) { s.active = true; scheduleTransition(el); }
+                computeFor(el, point);
+            } else {
+                const s = state.get(el);
+                if (s.active) resetEl(el);
+            }
+        }
+    };
 
-                        const point = ('touches' in e) ? e.touches[0] : e;
-                        const r = el.getBoundingClientRect();
-                        
-                        const cx = r.left + r.width / 2;
-                        const cy = r.top + r.height / 2;
-                        
-                        const nx = Math.max(-1, Math.min(1, (point.clientX - cx) / (r.width / 2)));
-                        const ny = Math.max(-1, Math.min(1, (point.clientY - cy) / (r.height / 2)));
+    window.addEventListener('pointermove', globalMove);
+    window.addEventListener('mousemove', globalMove);
+    window.addEventListener('touchmove', globalMove, { passive: true });
 
-                        const mag = parsePerspective();
-                        rx = -ny * mag;
-                        ry = nx * mag;
-
-                        if (raf === null) raf = requestAnimationFrame(apply);
-                    };
-
-                    const onenter = () => {
-                        scheduleTransition();
-                    };
-
-                    const onleave = () => {
-                        if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
-                        if (disableTransTimer) { clearTimeout(disableTransTimer); disableTransTimer = null; }
-                        if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
-
-                        rx = 0;
-                        ry = 0;
-                        scheduleTransition();
-                        apply();
-                    };
-
-                    const ondown = e => {
-                        onenter();
-                        
-                        const onDocumentMove = evt => {
-                            onmove(evt);
-                        };
-                        
-                        const onDocumentUp = () => {
-                            onleave();
-                            window.removeEventListener('pointermove', onDocumentMove);
-                            window.removeEventListener('pointerup', onDocumentUp);
-                        };
-
-                        window.addEventListener('pointermove', onDocumentMove);
-                        window.addEventListener('pointerup', onDocumentUp);
-                    };
-
-                    el.addEventListener('pointerdown', ondown);
-                    el.addEventListener('pointerenter', onenter);
-                    el.addEventListener('pointermove', onmove);
-                    el.addEventListener('pointerleave', onleave);
-                }
-            })();
-        </script>
+    const endAll = () => nodes.forEach(el => { const s = state.get(el); if (s.active) resetEl(el); });
+    window.addEventListener('pointerup', endAll);
+    window.addEventListener('mouseup', endAll);
+    window.addEventListener('touchend', endAll);
+})();
+</script>
 
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
